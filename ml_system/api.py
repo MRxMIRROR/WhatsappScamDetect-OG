@@ -7,7 +7,8 @@ from scam_detector import ScamDetector
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_folder="static", static_url_path="/")
 CORS(app)
 
 detector = ScamDetector(model_dir='./models')
@@ -19,13 +20,12 @@ except Exception as e:
     logger.error(f"Failed to load model: {e}")
 
 
+
+
 @app.route("/")
-def serve_frontend():
+def serve_root():
     return send_from_directory(app.static_folder, "index.html")
 
-@app.errorhandler(404)
-def not_found(e):
-    return send_from_directory(app.static_folder, "index.html")
 
 @app.route('/health', methods=['GET'])
 def health():
