@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import logging
 from scam_detector import ScamDetector
@@ -18,6 +18,14 @@ try:
 except Exception as e:
     logger.error(f"Failed to load model: {e}")
 
+
+@app.route("/")
+def serve_frontend():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return send_from_directory(app.static_folder, "index.html")
 
 @app.route('/health', methods=['GET'])
 def health():
